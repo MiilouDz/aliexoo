@@ -1,0 +1,34 @@
+# Fly.io configuration for the AliExpress service.
+# This is a background worker (polls Telegram/AliExpress outbound) — it
+# has no HTTP port to serve, so there's deliberately no [http_service]
+# or [[services]] block. It must also stay running 24/7 rather than
+# scale to zero, since it's a live channel monitor.
+#
+# Before your first `fly deploy`, replace `app` below with a unique name
+# (or just run `fly launch --no-deploy` once to have flyctl fill it in),
+# create the app and volume, and set your secrets — see DEPLOY.md.
+
+app = "aliexpress-service"           # <- change to your own app name
+primary_region = "cdg"               # Paris — good latency for DZ/FR audiences; change if you prefer
+
+[build]
+
+[env]
+  # Non-secret settings only. Credentials go in `fly secrets set` instead
+  # (see DEPLOY.md) — never put tokens/keys here, this file is not encrypted.
+  TELETHON_SESSION = "/data/monitor"
+  STATE_FILE = "/data/channel_state.json"
+  KEEP_ALIVE = "0"
+
+[mounts]
+  source = "aliexpress_data"          # created once with `fly volumes create`
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+
+# Keep exactly one machine running at all times — this is a persistent
+# worker, not an on-demand web app.
+[processes]
+  worker = "python aliexpress_service.py"

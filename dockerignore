@@ -1,0 +1,16 @@
+.env
+.env.example
+.git
+.gitignore
+__pycache__/
+*.pyc
+*.session
+*.session-journal
+channel_state.json
+seen_links.json
+Dockerfile
+.dockerignore
+fly.toml
+README.md
+CHANGELOG.md
+DEPLOY.md
