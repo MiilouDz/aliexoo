@@ -1,0 +1,17 @@
+[Unit]
+Description=AliExpress Telegram service (interactive bot + channel monitor)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Change "ubuntu" and the paths below to match your actual username/folder
+# if you didn't follow ORACLE_DEPLOY.md exactly.
+User=ubuntu
+WorkingDirectory=/home/ubuntu/aliexoo
+ExecStart=/home/ubuntu/aliexoo/.venv/bin/python /home/ubuntu/aliexoo/aliexpress_service.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
